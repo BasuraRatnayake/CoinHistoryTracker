@@ -16,9 +16,9 @@ public class BuyController : Controller {
 	}
 
     [HttpGet]
-	public async Task<IActionResult> Get(int? page = 1, int? limit = 5) {
+	public async Task<IActionResult> Get(int page = 1, int limit = 5) {
         try {
-			List<TransactionHistory> response = await service.Get();
+			List<TransactionHistory> response = await service.Get(page, limit);
 			return Ok(response);
 		} catch (NotFoundException ex) {
 			return NotFound(ex.Message);
@@ -31,7 +31,7 @@ public class BuyController : Controller {
 			TransactionHistory response = await service.GetById(id);
 			return Ok(response);
 		} catch (BadRequestException ex) {
-			return BadRequest();
+			return BadRequest(ex.Message);
 		} catch (NotFoundException ex) {
 			return NotFound(ex.Message);
 		}
