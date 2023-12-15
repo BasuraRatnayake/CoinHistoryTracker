@@ -1,39 +1,44 @@
 ﻿using RestSharp;
 using Newtonsoft.Json.Linq;
+using CoinTrackerHistory.API.Exceptions;
 
 namespace CoinTrackerHistory.API.Services.ThirdParty;
 
 public static class CurrencyService {
-	public static async Task<decimal> GetCryptoCoinPrice(string FromCoin, string ToCoin) {
+	private static async Task<string> GetAPIResponse(string domain, string endpoint) {
 		try {
-			RestClient client = new($"https://api.coingate.com");
-			RestRequest request = new($"api/v2/rates/merchant/{FromCoin}/{ToCoin}");
+			RestClient client = new(domain);
+			RestRequest request = new(endpoint);
 			RestResponse response = await client.GetAsync(request);
 
 			if (string.IsNullOrWhiteSpace(response.Content))
-				throw new Exception("No Data Received From API");
+				throw new InternalServerException();
 
-			return decimal.Parse(response.Content);
-		} catch (Exception) {
+			return response.Content;
+		} catch (InternalServerException) {
+			throw;
+		}
+	}
+
+	public static async Task<decimal> GetCryptoCoinPrice(string FromCoin, string ToCoin) {
+		try {
+			string response = await GetAPIResponse("https://api.coingate.com", $"api/v2/rates/merchant/{FromCoin}/{ToCoin}");
+			return decimal.Parse(response);
+		} catch (InternalServerException) {
 			throw;
 		}
 	}
 
 	public static async Task<decimal> GetLKRPrice() {
 		try {
-			RestClient client = new RestClient("https://economia.awesomeapi.com.br");
-			RestRequest request = new RestRequest($"json/last/USD-LKR");
-			RestResponse response = await client.GetAsync(request);
+			string response = await GetAPIResponse("https://economia.awesomeapi.com.br", $"json/last/USD-LKR");
 
-			if (string.IsNullOrWhiteSpace(response.Content))
-				throw new Exception("No Data Received From API");
-
-			JObject obj = JObject.Parse(response.Content);
+			JObject obj = JObject.Parse(response);
 			if (obj == null)
-				throw new Exception("No Data Received From API (fawazahmed0)");
+				throw new InternalServerException();
 
 			return (decimal) obj["USDLKR"]["low"];
-		} catch (Exception) {
+		} catch (InternalServerException) {
 			throw;
 		}
 	}

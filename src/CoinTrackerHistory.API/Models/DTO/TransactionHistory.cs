@@ -5,8 +5,8 @@ using MongoDB.Bson.Serialization.Attributes;
 namespace CoinTrackerHistory.API.Models.DTO;
 
 public enum PurchaseType {
-	Buy = 0,
-	Sell = 1
+	Buy,
+	Sell
 }
 
 public class CoinPair {

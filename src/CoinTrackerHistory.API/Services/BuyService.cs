@@ -1,16 +1,23 @@
-﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using CoinTrackerHistory.API.Configurations;
 using CoinTrackerHistory.API.Exceptions;
 using CoinTrackerHistory.API.Models.DTO;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
+using System.Linq.Dynamic.Core;
 
 namespace CoinTrackerHistory.API.Services;
 
-public class FilterColumn {
-	public string? Column { get; set; }
-	public string? Value { get; set; }
+public enum RecordCommand {
+	OrderByDesc,
+	OrderByAsc,
+	FindEqual,
+	FindLike
+}
+public class RecordFilter {
+	public RecordCommand Command { get; set; }
+	public string Field { get; set; }
+	public string Value { get; set; }
 }
 
 public static class Validation {
@@ -21,8 +28,9 @@ public static class Validation {
 public class BuyService {
 	private readonly MongoDBConfig mongoDBConfig = new MongoDBConfig();
 	private readonly string collectionName = "TransactionHistory";
-
 	private IMongoCollection<TransactionHistory> collection;
+
+	private readonly PurchaseType purchaseType = PurchaseType.Buy;
 
 	public BuyService() {
 		try {
@@ -34,35 +42,82 @@ public class BuyService {
 		}
 	}
 
-	public async Task<TransactionHistory> GetLastInserted() {
+	public async Task<TransactionHistory> LastInsertedRecord() {
 		try {
-			return await collection
-			.Find(_ => true)
-			.SortByDescending(h => h.CreatedAt)
-			.Limit(1)
-			.FirstOrDefaultAsync();
-        } catch (Exception) {
-            throw;
-        }
+			IMongoQueryable<TransactionHistory> query = collection.AsQueryable<TransactionHistory>();
+			query = query.Where(_ => true);
+			query = (IMongoQueryable<TransactionHistory>)query.OrderBy($"CreatedAt DESC");
+			query = query.Take(1);
+
+			return await query.SingleOrDefaultAsync<TransactionHistory>();
+		} catch (InternalServerException) {
+			throw;
+		} catch (Exception) {
+			throw;
+		}
+	}
+
+	public void IsPaginationValid(int page, int limit) {
+		if (page <= 0 || limit <= 0)
+			throw new FormatException();
+	}
+
+	public IMongoQueryable<TransactionHistory> Filter(List<RecordFilter> filters, int page, int limit) {
+		try {
+			IsPaginationValid(page, limit);
+
+			IMongoQueryable<TransactionHistory> query = collection.AsQueryable<TransactionHistory>();
+
+			if (filters != null) {
+				int filterCount = filters.Count;
+				for (int i = 0; i < filterCount; i++) {
+					RecordFilter filter = filters[i];
+
+					switch (filter.Command) {
+						case RecordCommand.FindEqual:
+							query = (IMongoQueryable<TransactionHistory>) query.Where(filter.Field + " == " + filter.Value);
+							break;
+						case RecordCommand.OrderByDesc:
+							query = (IMongoQueryable<TransactionHistory>) query.OrderBy($"{filter.Field} DESC");
+							break;
+						case RecordCommand.OrderByAsc:
+							query = (IMongoQueryable<TransactionHistory>) query.OrderBy($"{filter.Field}");
+							break;
+					}
+				}
+			}
+
+			query = query.Skip((page - 1) * limit);
+			query = query.Take(limit);
+
+			return query;
+		} catch (FormatException) {
+			throw;
+		} catch (NotFoundException) {
+			throw;
+		} catch (InternalServerException) {
+			throw;
+		}
 	}
 
 	public async Task<List<TransactionHistory>> Get(int page, int limit) {
-		try {
-			if (page <= 0 || limit <= 0) throw new FormatException();
+        try {
+			List<RecordFilter> filters = new List<RecordFilter> {
+				new RecordFilter() { Command = RecordCommand.FindEqual, Field = "CoinPurchaseType", Value = ((int)purchaseType).ToString()},
+                new RecordFilter() { Command = RecordCommand.OrderByDesc, Field = "CreatedAt" }
+            }.Distinct().ToList();
 
-			List<TransactionHistory> data = await collection
-				.Find(c => c.CoinPurchaseType == PurchaseType.Buy)
-				.SortBy(c => c.CreatedAt)
-				.Skip((page - 1) * limit)
-				.Limit(limit)
-				.ToListAsync();
+            List<TransactionHistory> data = await Filter(filters, page, limit).ToListAsync();
 
-			if (data.Count == 0) throw new NotFoundException();
+			if (data.Count == 0)
+				throw new NotFoundException();
 
 			return data;
 		} catch (FormatException) {
 			throw new BadRequestException();
 		} catch (NotFoundException) {
+			throw;
+		} catch (InternalServerException ex) {
 			throw;
 		}
 	}
@@ -71,25 +126,39 @@ public class BuyService {
 			if (!Validation.Id.IsMatch(id))
 				throw new FormatException();
 
-			TransactionHistory data = await collection
-				.Find(c => c.Id == id)
-				.FirstOrDefaultAsync();
+			List<RecordFilter> filters = new List<RecordFilter> {
+				new RecordFilter() { Command = RecordCommand.FindEqual, Field = "Id", Value = id }
+            };
 
-			if (data == null) throw new NotFoundException();
+			TransactionHistory data = await Filter(filters, 1, 1).FirstOrDefaultAsync();
+
+			if (data == null)
+				throw new NotFoundException();
 
 			return data;
 		} catch (FormatException) {
 			throw new BadRequestException();
 		} catch (NotFoundException) {
 			throw;
-		} catch (Exception) {
+		} catch (InternalServerException) {
 			throw;
-		}
+		} 
 	}
-	public async Task<List<TransactionHistory>> GetByFilter(List<FilterColumn> filters) {
+	public async Task<List<TransactionHistory>> GetByFilter(List<RecordFilter> filters, int page, int limit) {
 		try {
-			return new List<TransactionHistory>();
-		} catch (Exception) {
+			IsPaginationValid(page, limit);
+
+			List<TransactionHistory> data = await Filter(filters, page, limit).ToListAsync();
+
+			if (data.Count == 0)
+				throw new NotFoundException();
+
+			return data;
+		} catch (FormatException) {
+			throw new BadRequestException();
+		} catch (NotFoundException) {
+			throw;
+		} catch (InternalServerException) {
 			throw;
 		}
 	}
@@ -97,14 +166,16 @@ public class BuyService {
 	public async Task<TransactionHistory> Add(TransactionHistory coin) {
 		try {
 			coin.Id = null;
-			coin.CoinPurchaseType = PurchaseType.Buy;
+			coin.CoinPurchaseType = purchaseType;
 			coin.CreatedAt = DateTime.Now;
 
 			await coin.Calculate();
 			await collection.InsertOneAsync(coin);
 
-			return await GetLastInserted();
-		} catch (Exception) {
+			return await LastInsertedRecord();
+		} catch (FormatException) {
+			throw new BadRequestException();
+		} catch (InternalServerException) {
 			throw;
 		}
 	}

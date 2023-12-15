@@ -15,15 +15,20 @@ public class BuyController : Controller {
         this.service = service;
 	}
 
-    [HttpGet]
+	[HttpGet]
 	public async Task<IActionResult> Get(int page = 1, int limit = 5) {
-        try {
+		try {
 			List<TransactionHistory> response = await service.Get(page, limit);
 			return Ok(response);
+		} catch (BadRequestException ex) {
+			return BadRequest(ex.Message);
 		} catch (NotFoundException ex) {
 			return NotFound(ex.Message);
+		} catch (InternalServerException ex) {
+			return BadRequest(ex.Message);
 		}
 	}
+
     [HttpGet]
     [Route("{id}")]
     public async Task<ActionResult> GetById([FromRoute]string id) {
@@ -36,16 +41,31 @@ public class BuyController : Controller {
 			return NotFound(ex.Message);
 		}
 	}
-    [HttpGet]
+
+	[HttpGet]
     [Route("filter")]
-    public async Task<IActionResult> GetByColumns([FromBody] List<FilterColumn> filters, int? page = 1, int? limit = 5) {
-        List<TransactionHistory> response = await service.GetByFilter(filters);
-        return Ok(response);
-    }
+    public async Task<IActionResult> GetByColumns([FromBody] List<RecordFilter> filters, int page = 1, int limit = 5) {
+		try {
+			List<TransactionHistory> response = await service.GetByFilter(filters, page, limit);
+			return Ok(response);
+		} catch (BadRequestException ex) {
+			return BadRequest(ex.Message);
+		} catch (NotFoundException ex) {
+			return NotFound(ex.Message);
+		} catch (InternalServerException ex) {
+			return BadRequest(ex.Message);
+		}
+	}
 
     [HttpPost]
     public async Task<IActionResult> Add([FromBody]TransactionHistory data) {
-        TransactionHistory response = await service.Add(data);
-        return Ok(response);
-    }
+		try {
+			TransactionHistory response = await service.Add(data);
+			return Ok(response);
+		} catch (BadRequestException ex) {
+			return BadRequest(ex.Message);
+		} catch (InternalServerException ex) {
+			return BadRequest(ex.Message);
+		}
+	}
 }
