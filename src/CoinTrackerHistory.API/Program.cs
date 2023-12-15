@@ -8,6 +8,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<BuyService>();
+builder.Services.AddSingleton<SellService>();
 
 WebApplication app = builder.Build();
 

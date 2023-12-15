@@ -27,6 +27,7 @@
     <None Remove="Models\DTO\" />
     <None Remove="Services\ThirdParty\" />
     <None Remove="Exceptions\" />
+    <None Remove="Interfaces\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
@@ -36,5 +37,6 @@
     <Folder Include="Models\DTO\" />
     <Folder Include="Services\ThirdParty\" />
     <Folder Include="Exceptions\" />
+    <Folder Include="Interfaces\" />
   </ItemGroup>
 </Project>

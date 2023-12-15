@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace CoinTrackerHistory.API.Controllers;
 
 [ApiController]
-[Route("api/v1/buy")]
-public class BuyController : PurchaseController {
+[Route("api/v1/sell")]
+public class SellController : PurchaseController {
 
-    public BuyController(BuyService service) : base (service) { }
+    public SellController(SellService service) : base (service) { }
 }
