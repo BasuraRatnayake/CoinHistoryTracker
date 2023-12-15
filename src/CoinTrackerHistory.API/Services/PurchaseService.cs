@@ -9,15 +9,16 @@ using CoinTrackerHistory.API.Interfaces;
 
 namespace CoinTrackerHistory.API.Services;
 
-public enum RecordCommand {
+public enum FilterCommands {
 	OrderByDesc,
 	OrderByAsc,
-	FindEqual,
-	FindLike
+	FindEq,
+	FindGt,
+	FindLt
 }
 
-public class RecordFilter {
-	public RecordCommand Command {
+public class FilterTemplate {
+	public FilterCommands Command {
 		get; set;
 	}
 	public string Field {
@@ -72,7 +73,7 @@ public class PurchaseService : IPurchaseService {
 			throw new FormatException();
 	}
 
-	public IMongoQueryable<TransactionHistory> Filter(List<RecordFilter> filters, int page, int limit) {
+	public IMongoQueryable<TransactionHistory> Filter(List<FilterTemplate> filters, int page, int limit) {
 		try {
 			IsPaginationValid(page, limit);
 
@@ -81,16 +82,16 @@ public class PurchaseService : IPurchaseService {
 			if (filters != null) {
 				int filterCount = filters.Count;
 				for (int i = 0; i < filterCount; i++) {
-					RecordFilter filter = filters[i];
+					FilterTemplate filter = filters[i];
 
 					switch (filter.Command) {
-						case RecordCommand.FindEqual:
+						case FilterCommands.FindEq:
 							query = (IMongoQueryable<TransactionHistory>) query.Where(filter.Field + " == " + filter.Value);
 							break;
-						case RecordCommand.OrderByDesc:
+						case FilterCommands.OrderByDesc:
 							query = (IMongoQueryable<TransactionHistory>) query.OrderBy($"{filter.Field} DESC");
 							break;
-						case RecordCommand.OrderByAsc:
+						case FilterCommands.OrderByAsc:
 							query = (IMongoQueryable<TransactionHistory>) query.OrderBy($"{filter.Field}");
 							break;
 					}
@@ -112,9 +113,9 @@ public class PurchaseService : IPurchaseService {
 
 	public async Task<List<TransactionHistory>> Get(int page, int limit) {
 		try {
-			List<RecordFilter> filters = new List<RecordFilter> {
-				new RecordFilter() { Command = RecordCommand.FindEqual, Field = "CoinPurchaseType", Value = ((int)purchaseType).ToString()},
-				new RecordFilter() { Command = RecordCommand.OrderByDesc, Field = "CreatedAt" }
+			List<FilterTemplate> filters = new List<FilterTemplate> {
+				new FilterTemplate() { Command = FilterCommands.FindEq, Field = "CoinPurchaseType", Value = ((int)purchaseType).ToString()},
+				new FilterTemplate() { Command = FilterCommands.OrderByDesc, Field = "CreatedAt" }
 			}.Distinct().ToList();
 
 			List<TransactionHistory> data = await Filter(filters, page, limit).ToListAsync();
@@ -136,31 +137,13 @@ public class PurchaseService : IPurchaseService {
 			if (!Validation.Id.IsMatch(id))
 				throw new FormatException();
 
-			List<RecordFilter> filters = new List<RecordFilter> {
-				new RecordFilter() { Command = RecordCommand.FindEqual, Field = "Id", Value = id }
+			List<FilterTemplate> filters = new List<FilterTemplate> {
+				new FilterTemplate() { Command = FilterCommands.FindEq, Field = "Id", Value = id }
 			};
 
 			TransactionHistory data = await Filter(filters, 1, 1).FirstOrDefaultAsync();
 
 			if (data == null)
-				throw new NotFoundException();
-
-			return data;
-		} catch (FormatException) {
-			throw new BadRequestException();
-		} catch (NotFoundException) {
-			throw;
-		} catch (InternalServerException) {
-			throw;
-		}
-	}
-	public async Task<List<TransactionHistory>> GetByFilter(List<RecordFilter> filters, int page, int limit) {
-		try {
-			IsPaginationValid(page, limit);
-
-			List<TransactionHistory> data = await Filter(filters, page, limit).ToListAsync();
-
-			if (data.Count == 0)
 				throw new NotFoundException();
 
 			return data;

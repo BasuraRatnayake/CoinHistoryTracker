@@ -42,21 +42,6 @@ public class PurchaseController : Controller, IPurchaseController {
 		}
 	}
 
-	[HttpGet]
-	[Route("filter")]
-	public async Task<IActionResult> GetByColumns([FromBody] List<RecordFilter> filters, int page = 1, int limit = 5) {
-		try {
-			List<TransactionHistory> response = await service.GetByFilter(filters, page, limit);
-			return Ok(response);
-		} catch (BadRequestException ex) {
-			return BadRequest(ex.Message);
-		} catch (NotFoundException ex) {
-			return NotFound(ex.Message);
-		} catch (InternalServerException ex) {
-			return BadRequest(ex.Message);
-		}
-	}
-
 	[HttpPost]
 	public async Task<IActionResult> Add([FromBody] TransactionHistory data) {
 		try {

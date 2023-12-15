@@ -10,11 +10,10 @@ public interface IPurchaseService {
 
 	public void IsPaginationValid(int page, int limit);
 
-	public IMongoQueryable<TransactionHistory> Filter(List<RecordFilter> filters, int page, int limit);
+	public IMongoQueryable<TransactionHistory> Filter(List<FilterTemplate> filters, int page, int limit);
 
 	public Task<List<TransactionHistory>> Get(int page, int limit);
 	public Task<TransactionHistory> GetById(string id);
-	public Task<List<TransactionHistory>> GetByFilter(List<RecordFilter> filters, int page, int limit);
 
 	public Task<TransactionHistory> Add(TransactionHistory coin);
 }
