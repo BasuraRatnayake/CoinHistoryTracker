@@ -23,6 +23,7 @@
     <None Remove="Configurations\" />
     <None Remove="Models\DTO\" />
     <None Remove="Services\ThirdParty\" />
+    <None Remove="Exceptions\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
@@ -31,5 +32,6 @@
     <Folder Include="Configurations\" />
     <Folder Include="Models\DTO\" />
     <Folder Include="Services\ThirdParty\" />
+    <Folder Include="Exceptions\" />
   </ItemGroup>
 </Project>
