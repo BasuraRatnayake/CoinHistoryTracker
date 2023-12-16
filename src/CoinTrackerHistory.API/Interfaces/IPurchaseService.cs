@@ -8,8 +8,7 @@ namespace CoinTrackerHistory.API.Interfaces;
 public interface IPurchaseService {
 	public Task<TransactionHistory> LastInsertedRecord();
 
-	public void IsPaginationValid(int page, int limit);
-
+	public void ValidateFilters(int page, int limit, List<FilterTemplate> filters = null);
 	public IMongoQueryable<TransactionHistory> Filter(List<FilterTemplate> filters, int page, int limit);
 
 	public Task<List<TransactionHistory>> Get(int page, int limit);
