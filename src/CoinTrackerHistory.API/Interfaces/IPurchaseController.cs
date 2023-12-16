@@ -1,4 +1,5 @@
-﻿using CoinTrackerHistory.API.Models.DTO;
+﻿using CoinTrackerHistory.API.Models;
+using CoinTrackerHistory.API.Models.DTO;
 using CoinTrackerHistory.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
