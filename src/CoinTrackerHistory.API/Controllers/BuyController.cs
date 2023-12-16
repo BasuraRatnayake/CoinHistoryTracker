@@ -1,6 +1,4 @@
-﻿using CoinTrackerHistory.API.Exceptions;
-using CoinTrackerHistory.API.Models.DTO;
-using CoinTrackerHistory.API.Services;
+﻿using CoinTrackerHistory.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CoinTrackerHistory.API.Controllers;

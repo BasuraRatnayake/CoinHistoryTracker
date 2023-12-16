@@ -6,7 +6,8 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System.Linq.Dynamic.Core;
 using CoinTrackerHistory.API.Interfaces;
-using System;
+using System.Linq.Expressions;
+using System.Globalization;
 
 namespace CoinTrackerHistory.API.Services;
 
@@ -22,10 +23,10 @@ public enum FilterCommands {
 }
 
 public class FilterTemplate {
-	public FilterCommands Command {
+	public required FilterCommands Command {
 		get; set;
 	}
-	public string Field {
+	public required string Field {
 		get; set;
 	}
 	public string Value {
@@ -36,8 +37,8 @@ public class FilterTemplate {
 public static class Validation {
 	public static Regex Id = new Regex("^[a-fA-F0-9]+$");
 	public static Regex Num = new Regex("^[0-9]+$");
-	public static Regex CommandValue = new Regex(@"^[A-Za-z0-9_\.]{2,50}$");
-	public static Regex CommandField = new Regex("^[A-Za-z]{2,10}$");
+	public static Regex CommandValue = new Regex(@"^[A-Za-z0-9_\.]{1,50}$");
+	public static Regex CommandField = new Regex(@"^[A-Za-z\.]{1,50}$");
 }
 
 public class PurchaseService : IPurchaseService {
@@ -70,19 +71,27 @@ public class PurchaseService : IPurchaseService {
 		for (int i = 0; i < filterCount; i++) {
 			FilterTemplate filter = filters[i];
 
+			filter.Value = string.IsNullOrEmpty(filter.Value) ? "" : filter.Value;
+
 			bool isCommandInValid = string.IsNullOrWhiteSpace(
 				allowedFilterCommands
 				.AsQueryable()
 				.Where(c => c == Enum.GetName(filter.Command))
 				.FirstOrDefault()
 			);
-			if (!isCommandInValid) throw new BadRequestException();
+			if (isCommandInValid)
+				throw new BadRequestException();
+
+			bool isFilterNonValueAllowed = filter.Command == FilterCommands.OrderByAsc || filter.Command == FilterCommands.OrderByDesc;
+
 			if (
-				!Validation.CommandValue.IsMatch(filter.Value) ||
+				(!Validation.CommandValue.IsMatch(filter.Value) && !isFilterNonValueAllowed) ||
 				!Validation.CommandField.IsMatch(filter.Field)
-			) throw new BadRequestException();
+			)
+				throw new BadRequestException();
 		}
 	}
+
 	public IMongoQueryable<TransactionHistory> Filter(List<FilterTemplate> filters, int page, int limit) {
 		try {
 			ValidateFilters(page, limit, filters);
@@ -96,22 +105,22 @@ public class PurchaseService : IPurchaseService {
 
 					switch (filter.Command) {
 						case FilterCommands.FindEq:
-							query = (IMongoQueryable<TransactionHistory>) query.Where(filter.Field + " == " + filter.Value);
+							query = (IMongoQueryable<TransactionHistory>) query.Where($"{filter.Field} = @0", filter.Value);
 							break;
 						case FilterCommands.FindGt:
-							query = (IMongoQueryable<TransactionHistory>) query.Where(filter.Field + " > " + filter.Value);
+							query = (IMongoQueryable<TransactionHistory>) query.Where($"{filter.Field} > @0", decimal.Parse(filter.Value));
 							break;
 						case FilterCommands.FindLt:
-							query = (IMongoQueryable<TransactionHistory>) query.Where(filter.Field + " < " + filter.Value);
-							break;
-						case FilterCommands.FindGtE:
-							query = (IMongoQueryable<TransactionHistory>) query.Where(filter.Field + " >= " + filter.Value);
+							query = (IMongoQueryable<TransactionHistory>) query.Where($"{filter.Field} < @0", decimal.Parse(filter.Value));
 							break;
 						case FilterCommands.FindLtE:
-							query = (IMongoQueryable<TransactionHistory>) query.Where(filter.Field + " <= " + filter.Value);
+							query = (IMongoQueryable<TransactionHistory>) query.Where($"{filter.Field} <= @0", decimal.Parse(filter.Value));
+							break;
+						case FilterCommands.FindGtE:
+							query = (IMongoQueryable<TransactionHistory>) query.Where($"{filter.Field} >= @0", decimal.Parse(filter.Value));
 							break;
 						case FilterCommands.FindLike:
-							query = (IMongoQueryable<TransactionHistory>) query.Where("c => c." + filter.Field + ".Contains(" + filter.Value + ")");
+							query = (IMongoQueryable<TransactionHistory>) query.Where($"{filter.Field}.Contains(@0)", filter.Value);
 							break;
 						case FilterCommands.OrderByDesc:
 							query = (IMongoQueryable<TransactionHistory>) query.OrderBy($"{filter.Field} DESC");
@@ -151,14 +160,22 @@ public class PurchaseService : IPurchaseService {
 		}
 	}
 
-	public async Task<List<TransactionHistory>> Get(int page, int limit) {
+	public async Task<List<TransactionHistory>> Get(int page, int limit, List<FilterTemplate>? filters = null) {
 		try {
-			List<FilterTemplate> filters = new List<FilterTemplate> {
-				new FilterTemplate() { Command = FilterCommands.FindEq, Field = "CoinPurchaseType", Value = ((int)purchaseType).ToString()},
-				new FilterTemplate() { Command = FilterCommands.OrderByDesc, Field = "CreatedAt" }
-			}.Distinct().ToList();
+			List<FilterTemplate> _filters = new List<FilterTemplate>();
+			_filters.AddRange(
+				new List<FilterTemplate> {
+					new FilterTemplate() {
+						Command = FilterCommands.FindEq, Field = "CoinPurchaseType", Value = ((int)purchaseType).ToString()
+					}
+				});
 
-			List<TransactionHistory> data = await Filter(filters, page, limit).ToListAsync();
+			if (filters != null)
+				_filters.AddRange(filters);
+
+			_filters = _filters.Distinct().ToList();
+
+			List<TransactionHistory> data = await Filter(_filters, page, limit).ToListAsync();
 
 			if (data.Count == 0)
 				throw new NotFoundException();
