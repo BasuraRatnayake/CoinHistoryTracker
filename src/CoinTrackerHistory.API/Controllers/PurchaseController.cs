@@ -41,6 +41,7 @@ public class PurchaseController : Controller, IPurchaseController {
 			return NotFound(ex.Message);
 		}
 	}
+
 	[HttpPost]
 	[Route("filter")]
 	public async Task<ActionResult> GetByFilter([FromBody] List<FilterTemplate> filters, int page = 1, int limit = 5) {

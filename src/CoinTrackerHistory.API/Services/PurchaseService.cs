@@ -11,10 +11,10 @@ using CoinTrackerHistory.API.Models;
 namespace CoinTrackerHistory.API.Services;
 
 public static class Validation {
-	public static Regex Id = new Regex("^[a-fA-F0-9]+$");
-	public static Regex Num = new Regex("^[0-9]+$");
-	public static Regex CommandValue = new Regex(@"^[A-Za-z0-9_\.]{1,50}$");
-	public static Regex CommandField = new Regex(@"^[A-Za-z\.]{1,50}$");
+	public static readonly Regex Id = new Regex("^[a-fA-F0-9]+$");
+	public static readonly Regex Num = new Regex("^[0-9]+$");
+	public static readonly Regex CommandValue = new Regex(@"^[A-Za-z0-9_\.]{1,50}$");
+	public static readonly Regex CommandField = new Regex(@"^[A-Za-z\.]{1,50}$");
 }
 
 public class PurchaseService : IPurchaseService {

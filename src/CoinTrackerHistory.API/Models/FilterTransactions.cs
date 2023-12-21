@@ -40,10 +40,8 @@ public class FilterTransactions {
 	}
 
 	public void ValidateFilters(int page, int limit, List<FilterTemplate>? filters = null) {
-		if (page <= 0 || limit <= 0)
-			throw new FormatException();
-		if (filters == null)
-			return;
+		if (page <= 0 || limit <= 0) throw new FormatException();
+		if (filters == null) return;
 
 		int filterCount = filters.Count;
 		for (int i = 0; i < filterCount; i++) {
