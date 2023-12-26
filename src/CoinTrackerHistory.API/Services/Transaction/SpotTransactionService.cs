@@ -9,18 +9,18 @@ namespace CoinTrackerHistory.API.Services;
 
 public class SpotTransactionService {
 	private const string COLLECTION_NAME = "Transactions";
-	private IMongoCollection<Transaction> Collection { get; set; }
+	private IMongoCollection<SpotTransaction> Collection { get; set; }
 
 	private readonly CoinWalletService CoinWalletService;
 
 	public SpotTransactionService(IMongoDatabase database) {
-		Collection = database.GetCollection<Transaction>(COLLECTION_NAME);
+		Collection = database.GetCollection<SpotTransaction>(COLLECTION_NAME);
 		CoinWalletService = new(database);
 	}
 
-	public async Task<Transaction> LastInsertedRecord() {
+	public async Task<SpotTransaction> LastInsertedRecord() {
 		try {
-			IMongoQueryable<Transaction> query = Collection.AsQueryable();
+			IMongoQueryable<SpotTransaction> query = Collection.AsQueryable();
 			query = query.Where(t => t.IsP2P == false);
 			query = query.Take(1);
 
@@ -30,19 +30,19 @@ public class SpotTransactionService {
 		}
 	}
 
-	public async Task<List<Transaction>> Get() {
+	public async Task<List<SpotTransaction>> Get() {
 		try {
-			IMongoQueryable<Transaction> query = Collection.AsQueryable();
+			IMongoQueryable<SpotTransaction> query = Collection.AsQueryable();
 			query = query.Where(t => t.IsP2P == false);
-			query = (IMongoQueryable<Transaction>) query.OrderBy("CreatedAt DESC");
+			query = (IMongoQueryable<SpotTransaction>) query.OrderBy("CreatedAt DESC");
 			return await query.ToListAsync();
 		} catch (Exception) {
 			throw;
 		}
 	}
-	public async Task<Transaction> Get(string id) {
+	public async Task<SpotTransaction> Get(string id) {
 		try {
-			IMongoQueryable<Transaction> query = Collection.AsQueryable();
+			IMongoQueryable<SpotTransaction> query = Collection.AsQueryable();
 			query = query.Where(t => t.Id == id && t.IsP2P == false);
 			return await query.SingleAsync();
 		} catch (Exception) {
@@ -50,10 +50,10 @@ public class SpotTransactionService {
 		}
 	}
 
-	public async Task<Transaction> Add(Transaction data) {
+	public async Task<SpotTransaction> Add(SpotTransaction data) {
 		try {
 			data.Id = null;
-			data.Type = PurchaseType.Buy;
+			data.Type = TransactionType.SpotBuy;
 			data.CreatedAt = DateTime.Now;
 			data.IsP2P = false;
 

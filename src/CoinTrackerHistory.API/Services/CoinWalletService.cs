@@ -6,7 +6,7 @@ using System.Linq.Dynamic.Core;
 
 namespace CoinTrackerHistory.API.Services;
 
-public class CoinWalletService : TransactionService {
+public class CoinWalletService {
 	private const string COLLECTION_NAME = "CoinWallet";
 	public IMongoCollection<Coin> Collection { get; set; }
 

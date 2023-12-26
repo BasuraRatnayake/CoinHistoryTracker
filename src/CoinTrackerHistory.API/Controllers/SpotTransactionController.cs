@@ -19,9 +19,9 @@ public class SpotTransactionController : Controller {
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> Purchase([FromBody] Transaction data) {
+	public async Task<IActionResult> Purchase([FromBody] SpotTransaction data) {
 		try {
-			Transaction response = await SpotService.Add(data);
+			SpotTransaction response = await SpotService.Add(data);
 			return Ok(response);
 		} catch (Exception) {
 			throw;
@@ -29,7 +29,7 @@ public class SpotTransactionController : Controller {
 	}
 
 	[HttpGet]
-	public async Task<List<Transaction>> Get() {
+	public async Task<List<SpotTransaction>> Get() {
 		try {
 			return await SpotService.Get();
 		} catch (Exception) {
@@ -39,7 +39,7 @@ public class SpotTransactionController : Controller {
 
 	[HttpGet]
 	[Route("{id}")]
-	public async Task<Transaction> GetById(string id) {
+	public async Task<SpotTransaction> GetById(string id) {
 		try {
 			return await SpotService.Get(id);
 		} catch (Exception) {

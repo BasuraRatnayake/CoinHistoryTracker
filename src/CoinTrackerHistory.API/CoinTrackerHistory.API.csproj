@@ -33,6 +33,7 @@
     <None Remove="Exceptions\" />
     <None Remove="Interfaces\" />
     <None Remove="Models\Transaction\" />
+    <None Remove="Services\Transaction\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
@@ -43,5 +44,6 @@
     <Folder Include="Exceptions\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Models\Transaction\" />
+    <Folder Include="Services\Transaction\" />
   </ItemGroup>
 </Project>

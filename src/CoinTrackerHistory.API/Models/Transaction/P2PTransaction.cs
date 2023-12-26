@@ -8,14 +8,8 @@ public class P2PTransaction : Transaction {
 
 	public P2PTransaction() {
 		IsP2P = true;
-		Type = PurchaseType.Buy;
+		Type = TransactionType.P2PBuy;
 		Note = "P2P via Bank";
-	}
-
-	private void CalculateExchangeConversionFee() {
-		ExchangeConversionFee = (Investment / LKR2USD) - (Investment / Coin.Price);
-		ExchangeConversionFee = ExchangeConversionFee * LKR2USD;
-		ExchangeConversionFee = Math.Round(ExchangeConversionFee, Constants.DECIMAL_PLACES);
 	}
 
 	public override decimal Quantity {
@@ -26,7 +20,10 @@ public class P2PTransaction : Transaction {
 
 	public override decimal TotalExpenses {
 		get {
-			CalculateExchangeConversionFee();
+			ExchangeConversionFee = (Investment / LKR2USD) - (Investment / Coin.Price);
+			ExchangeConversionFee = ExchangeConversionFee * LKR2USD;
+			ExchangeConversionFee = Math.Round(ExchangeConversionFee, Constants.DECIMAL_PLACES);
+
 			return Math.Round(BankTransferFee + ExchangeConversionFee, Constants.DECIMAL_PLACES);
 		}
 	}
