@@ -1,6 +1,7 @@
 ﻿using CoinTrackerHistory.API.Exceptions;
 using CoinTrackerHistory.API.Models;
 using CoinTrackerHistory.API.Models.Transaction;
+using CoinTrackerHistory.API.Services.Filter;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System.Linq.Dynamic.Core;
@@ -50,12 +51,14 @@ public class SpotTransactionService {
 		}
 	}
 
-	public async Task<SpotTransaction> Add(SpotTransaction data) {
+	public async Task<SpotTransaction> Purchase(SpotTransaction data) {
 		try {
 			data.Id = null;
-			data.Type = TransactionType.SpotBuy;
+			data.Type = TransactionType.SpotPurchase;
 			data.CreatedAt = DateTime.Now;
 			data.IsP2P = false;
+			data.BankTransferFee = 0;
+			data.ExchangeConversionFee = 0;
 
 			Coin payCoin = await CoinWalletService.Get(data.Coin.From);
 			if (payCoin == null) throw new NotEnoughFundException();

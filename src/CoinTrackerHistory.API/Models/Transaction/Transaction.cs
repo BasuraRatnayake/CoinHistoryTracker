@@ -27,15 +27,18 @@ public class Transaction {
 		get; set;
 	}
 
-	public bool? IsP2P {
+	public bool IsP2P {
 		get; set;
 	}
 
+	[BsonDefaultValue("Transaction Data")]
 	public string? Note {
 		get; set;
 	}
 
-	public required TransactionType Type { get; set; }
+	public required TransactionType Type {
+		get; set;
+	}
 
 	public DateTime? CreatedAt { get; set; } = DateTime.Now;
 
@@ -50,5 +53,16 @@ public class Transaction {
 			return 0;
 		}
 	}
-}
 
+	[BsonDefaultValue(0)]
+	[BsonIgnoreIfDefault]
+	public decimal BankTransferFee {
+		get; set;
+	}
+
+	[BsonDefaultValue(0)]
+	[BsonIgnoreIfDefault]
+	public decimal ExchangeConversionFee {
+		get; set;
+	}
+}

@@ -2,9 +2,9 @@
 namespace CoinTrackerHistory.API.Models.Transaction;
 
 public enum TransactionType {
-	SpotBuy,
-	SpotSell,
+	SpotPurchase,
+	SpotSale,
 
-	P2PBuy,
-	P2PSell
+	P2PPurchase,
+	P2PSale
 }

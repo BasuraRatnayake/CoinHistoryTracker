@@ -3,12 +3,8 @@
 namespace CoinTrackerHistory.API.Models.Transaction;
 
 public class P2PTransaction : Transaction {
-	public required decimal BankTransferFee { get; set; } = 30;
-	public decimal ExchangeConversionFee { get; set; }
-
 	public P2PTransaction() {
 		IsP2P = true;
-		Type = TransactionType.P2PBuy;
 		Note = "P2P via Bank";
 	}
 

@@ -6,7 +6,6 @@ public class SpotTransaction : Transaction {
 
 	public SpotTransaction() {
 		IsP2P = false;
-		Type = TransactionType.SpotBuy;
 		Note = "Spot via Wallet";
 	}
 

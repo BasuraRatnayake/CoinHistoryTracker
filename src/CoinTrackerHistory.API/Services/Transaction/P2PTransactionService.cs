@@ -49,10 +49,10 @@ public class P2PTransactionService {
 		}
 	}
 
-	public async Task<P2PTransaction> Add(P2PTransaction data) {
+	public async Task<P2PTransaction> Purchase(P2PTransaction data) {
 		try {
 			data.Id = null;
-			data.Type = TransactionType.SpotBuy;
+			data.Type = TransactionType.P2PPurchase;
 			data.CreatedAt = DateTime.Now;
 
 			Coin coinData = await CoinWalletService.Get(data.Coin.To);
