@@ -7,14 +7,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<BuyService>();
-builder.Services.AddSingleton<SellService>();
+builder.Services.AddSingleton<DatabaseService>();
+
+builder.Services.AddControllers().AddJsonOptions(options => {
+	options.JsonSerializerOptions.PropertyNamingPolicy = null;
+});
 
 WebApplication app = builder.Build();
 
 if (app.Environment.IsDevelopment()) {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

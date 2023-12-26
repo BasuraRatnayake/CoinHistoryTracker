@@ -1,7 +1,5 @@
 ﻿using System.Text.RegularExpressions;
-using CoinTrackerHistory.API.Configurations;
 using CoinTrackerHistory.API.Exceptions;
-using CoinTrackerHistory.API.Models.DTO;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System.Linq.Dynamic.Core;
@@ -17,110 +15,110 @@ public static class Validation {
 	public static readonly Regex CommandField = new Regex(@"^[A-Za-z\.]{1,50}$");
 }
 
-public class PurchaseService : IPurchaseService {
-	private readonly MongoDBConfig mongoDBConfig = new MongoDBConfig();
-	private readonly string collectionName = "TransactionHistory";
-	public IMongoCollection<TransactionHistory> collection;
+//public class PurchaseService : IPurchaseService {
+//	private readonly MongoDBConfig mongoDBConfig = new MongoDBConfig();
+//	private readonly string collectionName = "TransactionHistory";
+//	public IMongoCollection<TransactionHistory> collection;
 
-	private readonly PurchaseType purchaseType;
-	private FilterTransactions filter;
+//	private readonly PurchaseType purchaseType;
+//	private FilterTransactionService filter;
 
-	public PurchaseService(PurchaseType purchaseType) {
-		try {
-			MongoClient client = new MongoClient(mongoDBConfig.CONNECTION_STR);
-			IMongoDatabase database = client.GetDatabase(mongoDBConfig.DATABASE_NAME);
-			collection = database.GetCollection<TransactionHistory>(collectionName);
+//	public PurchaseService(PurchaseType purchaseType) {
+//		try {
+//			MongoClient client = new MongoClient(mongoDBConfig.CONNECTION_STR);
+//			IMongoDatabase database = client.GetDatabase(mongoDBConfig.DATABASE_NAME);
+//			collection = database.GetCollection<TransactionHistory>(collectionName);
 
-			filter = new FilterTransactions(collection);
+//			filter = new FilterTransactionService(collection);
 
-			this.purchaseType = purchaseType;
-		} catch (Exception) {
-			throw;
-		}
-	}
+//			this.purchaseType = purchaseType;
+//		} catch (Exception) {
+//			throw;
+//		}
+//	}
 
-	public async Task<TransactionHistory> LastInsertedRecord() {
-		try {
-			IMongoQueryable<TransactionHistory> query = collection.AsQueryable<TransactionHistory>();
-			query = query.Where(_ => true);
-			query = (IMongoQueryable<TransactionHistory>) query.OrderBy($"CreatedAt DESC");
-			query = query.Take(1);
+//	public async Task<TransactionHistory> LastInsertedRecord() {
+//		try {
+//			IMongoQueryable<TransactionHistory> query = collection.AsQueryable<TransactionHistory>();
+//			query = query.Where(_ => true);
+//			query = (IMongoQueryable<TransactionHistory>) query.OrderBy($"CreatedAt DESC");
+//			query = query.Take(1);
 
-			return await query.SingleOrDefaultAsync<TransactionHistory>();
-		} catch (InternalServerException) {
-			throw;
-		} catch (Exception) {
-			throw;
-		}
-	}
+//			return await query.SingleOrDefaultAsync<TransactionHistory>();
+//		} catch (InternalServerException) {
+//			throw;
+//		} catch (Exception) {
+//			throw;
+//		}
+//	}
 
-	public async Task<List<TransactionHistory>> Get(int page, int limit, List<FilterTemplate>? filters = null) {
-		try {
-			List<FilterTemplate> _filters = new List<FilterTemplate>();
-			_filters.AddRange(
-				new List<FilterTemplate> {
-					new FilterTemplate() {
-						Command = FilterCommands.FindEq, Field = "CoinPurchaseType", Value = ((int)purchaseType).ToString()
-					}
-				});
+//	public async Task<List<TransactionHistory>> Get(int page, int limit, List<FilterTemplate>? filters = null) {
+//		try {
+//			List<FilterTemplate> _filters = new List<FilterTemplate>();
+//			_filters.AddRange(
+//				new List<FilterTemplate> {
+//					new FilterTemplate() {
+//						Command = FilterCommands.FindEq, Field = "CoinPurchaseType", Value = ((int)purchaseType).ToString()
+//					}
+//				});
 
-			if (filters != null)
-				_filters.AddRange(filters);
+//			if (filters != null)
+//				_filters.AddRange(filters);
 
-			_filters = _filters.Distinct().ToList();
+//			_filters = _filters.Distinct().ToList();
 
-			List<TransactionHistory> data = await filter.Transactions(_filters, page, limit).ToListAsync();
+//			List<TransactionHistory> data = await filter.Transactions(_filters, page, limit).ToListAsync();
 
-			if (data.Count == 0)
-				throw new NotFoundException();
+//			if (data.Count == 0)
+//				throw new NotFoundException();
 
-			return data;
-		} catch (FormatException) {
-			throw new BadRequestException();
-		} catch (NotFoundException) {
-			throw;
-		} catch (InternalServerException) {
-			throw;
-		}
-	}
-	public async Task<TransactionHistory> GetById(string id) {
-		try {
-			if (!Validation.Id.IsMatch(id))
-				throw new FormatException();
+//			return data;
+//		} catch (FormatException) {
+//			throw new BadRequestException();
+//		} catch (NotFoundException) {
+//			throw;
+//		} catch (InternalServerException) {
+//			throw;
+//		}
+//	}
+//	public async Task<TransactionHistory> GetById(string id) {
+//		try {
+//			if (!Validation.Id.IsMatch(id))
+//				throw new FormatException();
 
-			List<FilterTemplate> filters = new List<FilterTemplate> {
-				new FilterTemplate() { Command = FilterCommands.FindEq, Field = "Id", Value = id }
-			};
+//			List<FilterTemplate> filters = new List<FilterTemplate> {
+//				new FilterTemplate() { Command = FilterCommands.FindEq, Field = "Id", Value = id }
+//			};
 
-			TransactionHistory data = await filter.Transactions(filters, 1, 1).FirstOrDefaultAsync();
+//			TransactionHistory data = await filter.Transactions(filters, 1, 1).FirstOrDefaultAsync();
 
-			if (data == null)
-				throw new NotFoundException();
+//			if (data == null)
+//				throw new NotFoundException();
 
-			return data;
-		} catch (FormatException) {
-			throw new BadRequestException();
-		} catch (NotFoundException) {
-			throw;
-		} catch (InternalServerException) {
-			throw;
-		}
-	}
+//			return data;
+//		} catch (FormatException) {
+//			throw new BadRequestException();
+//		} catch (NotFoundException) {
+//			throw;
+//		} catch (InternalServerException) {
+//			throw;
+//		}
+//	}
 
-	public async Task<TransactionHistory> Add(TransactionHistory coin) {
-		try {
-			coin.Id = null;
-			coin.CoinPurchaseType = purchaseType;
-			coin.CreatedAt = DateTime.Now;
+//	public async Task<TransactionHistory> Add(TransactionHistory coin) {
+//		try {
+//			coin.Id = null;
+//			coin.CoinPurchaseType = purchaseType;
+//			coin.CreatedAt = DateTime.Now;
 
-			await coin.Calculate();
-			await collection.InsertOneAsync(coin);
+//			await coin.Calculate();
+//			await collection.InsertOneAsync(coin);
 
-			return await LastInsertedRecord();
-		} catch (FormatException) {
-			throw new BadRequestException();
-		} catch (InternalServerException) {
-			throw;
-		}
-	}
-}
+//			return await LastInsertedRecord();
+//		} catch (FormatException) {
+//			throw new BadRequestException();
+//		} catch (InternalServerException) {
+//			throw;
+//		}
+//	}
+//}
