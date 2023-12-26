@@ -46,34 +46,4 @@ public class P2PTransactionController : Controller {
 			throw;
 		}
 	}
-
-	[HttpPost]
-	[Route("filter/{type}/{page}/{limit}")]
-	public async Task<List<Transaction>> Get([FromBody] List<FilterTemplate> filters, TransactionType type, int page = 1, int limit = 5) {
-		try {
-			List<FilterTemplate> _filters = new List<FilterTemplate>();
-			_filters.AddRange(
-				new List<FilterTemplate> {
-					new FilterTemplate() {
-						Command = FilterCommands.FindEq,
-						Field = "Type",
-						Value = ((int)type).ToString()
-					}
-				});
-
-			if (filters != null)
-				_filters.AddRange(filters);
-
-			_filters = _filters.Distinct().ToList();
-
-			List<Transaction> data = await FilterService.Transactions(_filters, page, limit);
-
-			if (data.Count == 0)
-				throw new NotFoundException();
-
-			return data;
-		} catch (Exception) {
-			throw;
-		}
-	}
 }

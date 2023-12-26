@@ -1,4 +1,5 @@
 ﻿using System.Linq.Dynamic.Core;
+using CoinTrackerHistory.API.Configurations;
 using CoinTrackerHistory.API.Exceptions;
 using CoinTrackerHistory.API.Models.Transaction;
 using MongoDB.Driver;
@@ -39,8 +40,8 @@ public class FilterTransactionService {
 			bool isFilterNonValueAllowed = filter.Command == FilterCommands.OrderByAsc || filter.Command == FilterCommands.OrderByDesc;
 
 			if (
-				(!Validation.CommandValue.IsMatch(filter.Value) && !isFilterNonValueAllowed) ||
-				!Validation.CommandField.IsMatch(filter.Field)
+				(!Constants.COMMAND_VALUE.IsMatch(filter.Value) && !isFilterNonValueAllowed) ||
+				!Constants.COMMAND_FIELD.IsMatch(filter.Field)
 			)
 				throw new BadRequestException();
 		}

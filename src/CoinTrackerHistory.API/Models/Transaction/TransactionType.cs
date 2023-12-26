@@ -6,5 +6,7 @@ public enum TransactionType {
 	SpotSale,
 
 	P2PPurchase,
-	P2PSale
+	P2PSale,
+
+	Earn
 }
