@@ -1,11 +1,13 @@
 ﻿using CoinTrackerHistory.API.Configurations;
 
-namespace CoinTrackerHistory.API.Models.Transaction;
+namespace CoinTrackerHistory.API.Models.Transactions;
 
 public class P2PTransaction : Transaction {
 	public P2PTransaction() {
 		IsP2P = true;
 		Note = "P2P via Bank";
+		BonusTieredAPRReward = 0;
+		RealTimeAPRReward = 0;
 	}
 
 	public override decimal Quantity {

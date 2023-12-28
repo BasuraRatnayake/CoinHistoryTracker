@@ -1,5 +1,5 @@
 ﻿using System;
-namespace CoinTrackerHistory.API.Models.Transaction;
+namespace CoinTrackerHistory.API.Models.Transactions;
 
 public enum TransactionType {
 	SpotPurchase,

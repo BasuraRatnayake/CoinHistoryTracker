@@ -1,4 +1,6 @@
 ﻿using System;
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace CoinTrackerHistory.API.Models;
 
 public class CoinPair {
@@ -9,11 +11,15 @@ public class CoinPair {
 		LKR/USDT = 310
 	*/
 
-	public required string From {
-		get; set;
-	}
-	public required string To {
-		get; set;
-	}
-	public required decimal Price { get; set; } = 0;
+	[BsonDefaultValue("")]
+	[BsonIgnoreIfDefault]
+	public string From { get; set; } = "";
+
+	[BsonDefaultValue("")]
+	[BsonIgnoreIfDefault]
+	public string To { get; set; } = "";
+
+	[BsonDefaultValue("0")]
+	[BsonIgnoreIfDefault]
+	public decimal Price { get; set; } = 0;
 }

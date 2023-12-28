@@ -1,12 +1,12 @@
 ﻿using CoinTrackerHistory.API.Exceptions;
 using CoinTrackerHistory.API.Models;
-using CoinTrackerHistory.API.Models.Transaction;
+using CoinTrackerHistory.API.Models.Transactions;
 using CoinTrackerHistory.API.Services.Filter;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System.Linq.Dynamic.Core;
 
-namespace CoinTrackerHistory.API.Services;
+namespace CoinTrackerHistory.API.Services.Transactions;
 
 public class SpotTransactionService {
 	private const string COLLECTION_NAME = "Transactions";
@@ -23,6 +23,7 @@ public class SpotTransactionService {
 		try {
 			IMongoQueryable<SpotTransaction> query = Collection.AsQueryable();
 			query = query.Where(t => t.IsP2P == false);
+			query = (IMongoQueryable<SpotTransaction>) query.OrderBy("CreatedAt DESC");
 			query = query.Take(1);
 
 			return await query.SingleOrDefaultAsync();

@@ -2,7 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace CoinTrackerHistory.API.Models.Transaction;
+namespace CoinTrackerHistory.API.Models.Transactions;
 
 public class Transaction {
 	[BsonId]
@@ -11,13 +11,13 @@ public class Transaction {
 
 	[BsonDefaultValue(0)]
 	[BsonIgnoreIfDefault]
-	public virtual decimal Investment { get; set; }
+	public decimal Investment { get; set; }
 
 	[BsonDefaultValue(0)]
 	[BsonIgnoreIfDefault]
-	public virtual decimal Fee { get; set; }
+	public decimal Fee { get; set; }
 
-	public required decimal LKR2USD { get; set; }
+	public decimal LKR2USD { get; set; }
 
 	public required CoinPair Coin { get; set; }
 
@@ -36,6 +36,17 @@ public class Transaction {
 	[BsonIgnoreIfDefault]
 	public virtual decimal TotalExpenses { get; set; }
 
+	#region Staking
+	[BsonDefaultValue(0)]
+	[BsonIgnoreIfDefault]
+	public decimal RealTimeAPRReward  { get; set; }
+
+	[BsonDefaultValue(0)]
+	[BsonIgnoreIfDefault]
+	public decimal BonusTieredAPRReward  { get; set; }
+	#endregion
+
+	#region P2P
 	[BsonDefaultValue(0)]
 	[BsonIgnoreIfDefault]
 	public virtual decimal BankTransferFee { get; set; }
@@ -43,4 +54,5 @@ public class Transaction {
 	[BsonDefaultValue(0)]
 	[BsonIgnoreIfDefault]
 	public virtual decimal ExchangeConversionFee { get; set; }
+	#endregion
 }

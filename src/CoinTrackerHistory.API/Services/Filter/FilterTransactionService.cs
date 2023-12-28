@@ -1,9 +1,9 @@
 ﻿using System.Linq.Dynamic.Core;
 using CoinTrackerHistory.API.Configurations;
 using CoinTrackerHistory.API.Exceptions;
-using CoinTrackerHistory.API.Models.Transaction;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
+using CoinTrackerHistory.API.Models.Transactions;
 
 namespace CoinTrackerHistory.API.Services.Filter;
 
@@ -51,7 +51,7 @@ public class FilterTransactionService {
 		try {
 			ValidateFilters(page, limit, filters);
 
-			IMongoQueryable<Transaction> query = collection.AsQueryable<Transaction>();
+			IMongoQueryable<Transaction> query = collection.AsQueryable();
 
 			if (filters != null) {
 				int filterCount = filters.Count;

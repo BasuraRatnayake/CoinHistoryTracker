@@ -1,10 +1,10 @@
 ﻿using CoinTrackerHistory.API.Models;
-using CoinTrackerHistory.API.Models.Transaction;
+using CoinTrackerHistory.API.Models.Transactions;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System.Linq.Dynamic.Core;
 
-namespace CoinTrackerHistory.API.Services;
+namespace CoinTrackerHistory.API.Services.Transactions;
 
 public class P2PTransactionService {
 	private const string COLLECTION_NAME = "Transactions";
@@ -21,6 +21,7 @@ public class P2PTransactionService {
 		try {
 			IMongoQueryable<P2PTransaction> query = Collection.AsQueryable();
 			query = query.Where(t => t.IsP2P == true);
+			query = (IMongoQueryable<P2PTransaction>) query.OrderBy("CreatedAt DESC");
 			query = query.Take(1);
 
 			return await query.SingleOrDefaultAsync();

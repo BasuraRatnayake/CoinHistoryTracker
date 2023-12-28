@@ -1,7 +1,7 @@
 ﻿using CoinTrackerHistory.API.Configurations;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace CoinTrackerHistory.API.Models.Transaction;
+namespace CoinTrackerHistory.API.Models.Transactions;
 
 public class SpotTransaction : Transaction {
 
@@ -10,13 +10,9 @@ public class SpotTransaction : Transaction {
 		Note = "Spot via Wallet";
 		BankTransferFee = 0;
 		ExchangeConversionFee = 0;
+		BonusTieredAPRReward = 0;
+		RealTimeAPRReward = 0;
 	}
-
-	[BsonIgnore]
-	public override decimal BankTransferFee { get; set; }
-
-	[BsonIgnore]
-	public override decimal ExchangeConversionFee { get; set; }
 
 	public override decimal Quantity {
 		get {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CoinTrackerHistory.API.Exceptions;
-using CoinTrackerHistory.API.Models.Transaction;
+using CoinTrackerHistory.API.Models.Transactions;
 using CoinTrackerHistory.API.Services;
 using CoinTrackerHistory.API.Services.Filter;
 using Microsoft.AspNetCore.Mvc;

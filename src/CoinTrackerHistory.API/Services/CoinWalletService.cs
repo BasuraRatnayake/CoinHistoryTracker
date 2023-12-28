@@ -1,5 +1,5 @@
 ﻿using CoinTrackerHistory.API.Models;
-using CoinTrackerHistory.API.Models.Transaction;
+using CoinTrackerHistory.API.Models.Transactions;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System.Linq.Dynamic.Core;
