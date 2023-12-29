@@ -8,5 +8,7 @@ public enum TransactionType {
 	P2PPurchase,
 	P2PSale,
 
-	Earn
+	Earn,
+
+	RedPacket
 }
