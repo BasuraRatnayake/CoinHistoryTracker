@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CoinTrackerHistory.API.Models.Transactions;
+﻿using CoinTrackerHistory.API.Models.Transactions;
 using CoinTrackerHistory.API.Services;
 using CoinTrackerHistory.API.Services.Transactions;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +8,21 @@ namespace CoinTrackerHistory.API.Controllers;
 [ApiController]
 [Route("api/v1/[controller]")]
 [Produces("application/json")]
-public class RedPacketController : Controller {
+public class RedPacketTransactionController : Controller {
 	private readonly RedPacketTransactionService RedPacketService;
 
-	public RedPacketController(DatabaseService database) {
+	public RedPacketTransactionController(DatabaseService database) {
 		RedPacketService = new RedPacketTransactionService(database.Database);
+	}
+
+	[HttpPost]
+	public async Task<IActionResult> Add([FromBody] RedPacketTransaction data) {
+		try {
+			RedPacketTransaction response = await RedPacketService.Add(data);
+			return Ok(response);
+		} catch (Exception) {
+			throw;
+		}
 	}
 
 	[HttpGet]

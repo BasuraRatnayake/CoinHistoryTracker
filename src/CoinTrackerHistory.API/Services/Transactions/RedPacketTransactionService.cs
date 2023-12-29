@@ -33,7 +33,7 @@ public class RedPacketTransactionService {
 
 	public async Task<RedPacketTransaction> Add(RedPacketTransaction data) {
 		try {
-			data.Id = null;
+			data.Id = null; 
 			data.Type = TransactionType.RedPacket;
 			data.CreatedAt = DateTime.Now;
 			data.IsP2P = false;
