@@ -1,7 +1,7 @@
 ﻿using CoinTrackerHistory.API.Exceptions;
 using CoinTrackerHistory.API.Models;
 using CoinTrackerHistory.API.Models.Transactions;
-using CoinTrackerHistory.API.Services.Filter;
+using CoinTrackerHistory.API.Services.Transactions.Filter;
 using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using System.Linq.Dynamic.Core;

@@ -1,11 +1,11 @@
 ﻿using CoinTrackerHistory.API.Exceptions;
 using CoinTrackerHistory.API.Models.Transactions;
 using CoinTrackerHistory.API.Services;
-using CoinTrackerHistory.API.Services.Filter;
+using CoinTrackerHistory.API.Services.Transactions.Filter;
 using CoinTrackerHistory.API.Services.Transactions;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CoinTrackerHistory.API.Controllers;
+namespace CoinTrackerHistory.API.Controllers.Transactions;
 
 [ApiController]
 [Route("api/v1/[controller]")]

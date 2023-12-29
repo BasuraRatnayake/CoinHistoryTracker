@@ -32,9 +32,10 @@
     <None Remove="Services\ThirdParty\" />
     <None Remove="Exceptions\" />
     <None Remove="Interfaces\" />
-    <None Remove="Services\Filter\" />
     <None Remove="Services\Transactions\" />
     <None Remove="Models\Transactions\" />
+    <None Remove="Controllers\Transactions\" />
+    <None Remove="Services\Transactions\Filter\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\" />
@@ -44,8 +45,9 @@
     <Folder Include="Services\ThirdParty\" />
     <Folder Include="Exceptions\" />
     <Folder Include="Interfaces\" />
-    <Folder Include="Services\Filter\" />
     <Folder Include="Services\Transactions\" />
     <Folder Include="Models\Transactions\" />
+    <Folder Include="Controllers\Transactions\" />
+    <Folder Include="Services\Transactions\Filter\" />
   </ItemGroup>
 </Project>

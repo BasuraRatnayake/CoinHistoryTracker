@@ -1,5 +1,5 @@
 ﻿using System;
-namespace CoinTrackerHistory.API.Services.Filter;
+namespace CoinTrackerHistory.API.Services.Transactions.Filter;
 
 public enum FilterCommands {
 	OrderByDesc,

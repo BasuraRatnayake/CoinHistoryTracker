@@ -5,7 +5,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Linq;
 using CoinTrackerHistory.API.Models.Transactions;
 
-namespace CoinTrackerHistory.API.Services.Filter;
+namespace CoinTrackerHistory.API.Services.Transactions.Filter;
 
 public class FilterTransactionService {
 	private const string COLLECTION_NAME = "Transactions";

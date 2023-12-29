@@ -47,7 +47,7 @@ public class RedPacketTransactionService {
 
 			Coin redPacketCoin = await CoinWalletService.Get(data.Coin.From);
 			if (redPacketCoin == null)
-				redPacketCoin = new Coin() { Name = data.Coin.From, Quantity = 0 };
+				redPacketCoin = await CoinWalletService.Add(new Coin() { Name = data.Coin.From, Quantity = 0 });
 
 			redPacketCoin.Quantity += data.Quantity;
 

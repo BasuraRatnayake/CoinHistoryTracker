@@ -3,7 +3,7 @@ using CoinTrackerHistory.API.Services;
 using CoinTrackerHistory.API.Services.Transactions;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CoinTrackerHistory.API.Controllers;
+namespace CoinTrackerHistory.API.Controllers.Transactions;
 
 [ApiController]
 [Route("api/v1/[controller]")]

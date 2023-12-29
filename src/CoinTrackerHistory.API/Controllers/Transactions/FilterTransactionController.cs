@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using CoinTrackerHistory.API.Exceptions;
 using CoinTrackerHistory.API.Models.Transactions;
 using CoinTrackerHistory.API.Services;
-using CoinTrackerHistory.API.Services.Filter;
+using CoinTrackerHistory.API.Services.Transactions.Filter;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CoinTrackerHistory.API.Controllers;
+namespace CoinTrackerHistory.API.Controllers.Transactions;
 
 [ApiController]
 [Route("api/v1/[controller]")]
