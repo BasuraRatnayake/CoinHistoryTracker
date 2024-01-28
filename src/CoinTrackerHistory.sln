@@ -5,7 +5,9 @@ VisualStudioVersion = 25.0.1706.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoinTrackerHistory.API", "CoinTrackerHistory.API\CoinTrackerHistory.API.csproj", "{39290C8E-2BC6-47F0-A816-3FDED8D2406A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoinTrackerHistory.GUI", "CoinTrackerHistory.GUI\CoinTrackerHistory.GUI.csproj", "{67AB9D99-16DD-4E74-ABB9-6FE3899C6A44}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoinTrackerHistory.Core", "CoinTrackerHistory.Core\CoinTrackerHistory.Core.csproj", "{5881E90C-1192-4549-B359-F2D1E5869E6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoinTrackerHistory.Demo", "CoinTrackerHistory.Demo\CoinTrackerHistory.Demo.csproj", "{46B0A462-8CEC-43ED-847F-C8F8264796F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +19,14 @@ Global
 		{39290C8E-2BC6-47F0-A816-3FDED8D2406A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39290C8E-2BC6-47F0-A816-3FDED8D2406A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39290C8E-2BC6-47F0-A816-3FDED8D2406A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{67AB9D99-16DD-4E74-ABB9-6FE3899C6A44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{67AB9D99-16DD-4E74-ABB9-6FE3899C6A44}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{67AB9D99-16DD-4E74-ABB9-6FE3899C6A44}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{67AB9D99-16DD-4E74-ABB9-6FE3899C6A44}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5881E90C-1192-4549-B359-F2D1E5869E6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5881E90C-1192-4549-B359-F2D1E5869E6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5881E90C-1192-4549-B359-F2D1E5869E6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5881E90C-1192-4549-B359-F2D1E5869E6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46B0A462-8CEC-43ED-847F-C8F8264796F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46B0A462-8CEC-43ED-847F-C8F8264796F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46B0A462-8CEC-43ED-847F-C8F8264796F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46B0A462-8CEC-43ED-847F-C8F8264796F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

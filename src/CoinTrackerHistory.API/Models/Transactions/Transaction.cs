@@ -32,9 +32,15 @@ public class Transaction {
 
 	public virtual decimal Quantity { get; set; }
 
+	public required ExchangeType Exchange { get; set; }
+
 	[BsonDefaultValue(0)]
 	[BsonIgnoreIfDefault]
 	public virtual decimal TotalExpenses { get; set; }
+
+	#region Spot
+	public bool HasTransactionDiscount { get; set; } = false;
+	#endregion
 
 	#region Staking
 	[BsonDefaultValue(0)]
